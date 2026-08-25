@@ -1,0 +1,86 @@
+// FoodBridge data model.
+// Two organization roles share one User table: DONOR orgs post surplus food,
+// RECIPIENT orgs (food banks, shelters, pantries) claim it.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  DONOR
+  RECIPIENT
+}
+
+enum ListingStatus {
+  AVAILABLE
+  CLAIMED
+  PICKED_UP
+  CANCELLED
+  EXPIRED
+}
+
+enum ClaimStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  orgName      String
+  address      String
+  lat          Float
+  lng          Float
+  phone        String?
+  createdAt    DateTime @default(now())
+
+  listings Listing[] @relation("DonorListings")
+  claims   Claim[]   @relation("RecipientClaims")
+}
+
+model Listing {
+  id               String        @id @default(cuid())
+  donor            User          @relation("DonorListings", fields: [donorId], references: [id])
+  donorId          String
+  title            String
+  description      String
+  category         String
+  quantity         String
+  pickupAddress    String
+  lat              Float
+  lng              Float
+  pickupWindowStart DateTime
+  pickupWindowEnd   DateTime
+  expiresAt        DateTime
+  status           ListingStatus @default(AVAILABLE)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  claims Claim[]
+
+  @@index([status])
+  @@index([expiresAt])
+}
+
+model Claim {
+  id          String      @id @default(cuid())
+  listing     Listing     @relation(fields: [listingId], references: [id])
+  listingId   String
+  recipient   User        @relation("RecipientClaims", fields: [recipientId], references: [id])
+  recipientId String
+  status      ClaimStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([listingId, recipientId])
+  @@index([status])
+}
