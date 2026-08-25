@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: foodbridge
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npx prisma migrate deploy
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: foodbridge-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: NODE_ENV
+        value: production
+
+databases:
+  - name: foodbridge-db
+    plan: free
