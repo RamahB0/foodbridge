@@ -1,0 +1,21 @@
+<header class="site-header">
+  <div class="container nav-inner">
+    <a class="brand" href="/">FoodBridge</a>
+    <nav>
+      <a href="/listings">Browse food</a>
+      <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+        <a href="/dashboard">Dashboard</a>
+        <% if (currentUser.role === 'DONOR') { %>
+          <a href="/listings/new">Post food</a>
+        <% } %>
+        <span class="nav-user"><%= currentUser.orgName %></span>
+        <form class="inline-form" method="POST" action="/logout">
+          <button type="submit" class="link-button">Sign out</button>
+        </form>
+      <% } else { %>
+        <a href="/login">Sign in</a>
+        <a href="/register" class="button-link">Get started</a>
+      <% } %>
+    </nav>
+  </div>
+</header>
