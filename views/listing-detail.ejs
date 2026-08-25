@@ -1,0 +1,70 @@
+<%- include('partials/header') %>
+
+<section class="listing-detail-page">
+  <h1><%= listing.title %></h1>
+  <p class="listing-meta"><%= listing.category %> · <%= listing.quantity %> · status: <%= listing.status %></p>
+  <p><%= listing.description %></p>
+  <p class="listing-meta">Pickup address: <%= listing.pickupAddress %></p>
+  <p class="listing-meta">
+    Pickup window: <%= new Date(listing.pickupWindowStart).toLocaleString() %>
+    to <%= new Date(listing.pickupWindowEnd).toLocaleString() %>
+  </p>
+  <p class="listing-meta">Posted by <%= listing.donor.orgName %></p>
+
+  <% if (isOwner) { %>
+    <div class="actions">
+      <% if (listing.status === 'AVAILABLE' || listing.status === 'CLAIMED') { %>
+        <form class="inline-form" method="POST" action="/listings/<%= listing.id %>/cancel">
+          <button type="submit" class="button-link secondary">Cancel listing</button>
+        </form>
+      <% } %>
+      <% if (listing.status === 'CLAIMED') { %>
+        <form class="inline-form" method="POST" action="/listings/<%= listing.id %>/picked-up">
+          <button type="submit" class="button-link">Mark picked up</button>
+        </form>
+      <% } %>
+    </div>
+
+    <h2>Claims</h2>
+    <% if (listing.claims.length === 0) { %>
+      <p class="empty-state">No claims yet.</p>
+    <% } else { %>
+      <ul class="claim-list">
+        <% listing.claims.forEach((claim) => { %>
+          <li>
+            <%= claim.recipient.orgName %> — <%= claim.status %>
+            <% if (claim.status === 'PENDING') { %>
+              <form class="inline-form" method="POST" action="/claims/<%= claim.id %>/confirm">
+                <button type="submit" class="link-button">Confirm</button>
+              </form>
+            <% } %>
+            <% if (claim.status === 'PENDING' || claim.status === 'CONFIRMED') { %>
+              <form class="inline-form" method="POST" action="/claims/<%= claim.id %>/cancel">
+                <button type="submit" class="link-button">Cancel</button>
+              </form>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  <% } else if (typeof currentUser !== 'undefined' && currentUser && currentUser.role === 'RECIPIENT') { %>
+    <div class="actions">
+      <% if (myClaim) { %>
+        <p>Your claim status: <strong><%= myClaim.status %></strong></p>
+        <% if (myClaim.status === 'PENDING' || myClaim.status === 'CONFIRMED') { %>
+          <form class="inline-form" method="POST" action="/claims/<%= myClaim.id %>/cancel">
+            <button type="submit" class="button-link secondary">Cancel my claim</button>
+          </form>
+        <% } %>
+      <% } else if (listing.status === 'AVAILABLE') { %>
+        <form class="inline-form" method="POST" action="/listings/<%= listing.id %>/claim">
+          <button type="submit" class="button-link">Claim this listing</button>
+        </form>
+      <% } else { %>
+        <p class="empty-state">This listing is no longer available.</p>
+      <% } %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

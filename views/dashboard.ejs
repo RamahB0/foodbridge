@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+
+<section class="dashboard-page">
+  <% if (role === 'DONOR') { %>
+    <h1>Your listings</h1>
+    <div class="actions"><a class="button-link" href="/listings/new">Post new food</a></div>
+    <% if (listings.length === 0) { %>
+      <p class="empty-state">You have not posted any listings yet.</p>
+    <% } else { %>
+      <ul class="listing-grid">
+        <% listings.forEach((listing) => { %>
+          <li class="listing-card">
+            <a href="/listings/<%= listing.id %>">
+              <h2><%= listing.title %></h2>
+              <p class="listing-meta">status: <%= listing.status %> · <%= listing.claims.length %> claim(s)</p>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  <% } else { %>
+    <h1>Your claims</h1>
+    <% if (claims.length === 0) { %>
+      <p class="empty-state">
+        You have not claimed anything yet. <a href="/listings">Browse available food</a>.
+      </p>
+    <% } else { %>
+      <ul class="listing-grid">
+        <% claims.forEach((claim) => { %>
+          <li class="listing-card">
+            <a href="/listings/<%= claim.listing.id %>">
+              <h2><%= claim.listing.title %></h2>
+              <p class="listing-meta">
+                status: <%= claim.status %> · from <%= claim.listing.donor.orgName %>
+              </p>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>
