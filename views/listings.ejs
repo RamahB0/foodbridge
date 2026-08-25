@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+
+<section class="listings-page">
+  <h1>Available food</h1>
+
+  <% if (listings.length === 0) { %>
+    <p class="empty-state">No listings are available right now. Check back soon.</p>
+  <% } else { %>
+    <ul class="listing-grid">
+      <% listings.forEach((listing) => { %>
+        <li class="listing-card">
+          <a href="/listings/<%= listing.id %>">
+            <h2><%= listing.title %></h2>
+            <p class="listing-meta"><%= listing.category %> · <%= listing.quantity %></p>
+            <p><%= listing.description %></p>
+            <p class="listing-meta">
+              Posted by <%= listing.donor.orgName %>
+              <% if (typeof listing.distanceMiles === 'number') { %>
+                · <%= listing.distanceMiles %> mi away
+              <% } %>
+            </p>
+            <p class="listing-meta">Pickup by <%= new Date(listing.expiresAt).toLocaleString() %></p>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

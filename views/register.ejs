@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+
+<section class="form-page">
+  <h1>Create an account</h1>
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+  <form method="POST" action="/register" class="stacked-form">
+    <label for="role">I am a...</label>
+    <select id="role" name="role" required>
+      <option value="">Choose one</option>
+      <option value="DONOR" <%= form.role === 'DONOR' ? 'selected' : '' %>>Donor (restaurant, grocer, farm, caterer)</option>
+      <option value="RECIPIENT" <%= form.role === 'RECIPIENT' ? 'selected' : '' %>>Recipient (food bank, shelter, pantry)</option>
+    </select>
+
+    <label for="orgName">Organization name</label>
+    <input type="text" id="orgName" name="orgName" value="<%= form.orgName || '' %>" required />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" value="<%= form.email || '' %>" required />
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" minlength="8" required />
+    <p class="hint">At least 8 characters.</p>
+
+    <label for="address">Address</label>
+    <input type="text" id="address" name="address" value="<%= form.address || '' %>" placeholder="Street, city, state" required />
+    <p class="hint">Used to match nearby donors and recipients. Not shown publicly.</p>
+
+    <label for="phone">Phone (optional)</label>
+    <input type="tel" id="phone" name="phone" value="<%= form.phone || '' %>" />
+
+    <button type="submit" class="button-link">Create account</button>
+  </form>
+  <p>Already have an account? <a href="/login">Sign in</a>.</p>
+</section>
+
+<%- include('partials/footer') %>

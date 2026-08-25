@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+
+<section class="form-page">
+  <h1>Post surplus food</h1>
+  <% if (error) { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+  <form method="POST" action="/listings/new" class="stacked-form">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" value="<%= form.title || '' %>" placeholder="e.g. 40 lbs of fresh produce" required />
+
+    <label for="category">Category</label>
+    <input type="text" id="category" name="category" value="<%= form.category || '' %>" placeholder="Produce, bakery, prepared meals, dairy..." required />
+
+    <label for="quantity">Quantity</label>
+    <input type="text" id="quantity" name="quantity" value="<%= form.quantity || '' %>" placeholder="e.g. 40 lbs, 20 trays, 15 meals" required />
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" required><%= form.description || '' %></textarea>
+
+    <label for="pickupAddress">Pickup address</label>
+    <input type="text" id="pickupAddress" name="pickupAddress" value="<%= form.pickupAddress || '' %>" placeholder="Street, city, state" required />
+
+    <label for="pickupWindowStart">Pickup window start</label>
+    <input type="datetime-local" id="pickupWindowStart" name="pickupWindowStart" value="<%= form.pickupWindowStart || '' %>" required />
+
+    <label for="pickupWindowEnd">Pickup window end</label>
+    <input type="datetime-local" id="pickupWindowEnd" name="pickupWindowEnd" value="<%= form.pickupWindowEnd || '' %>" required />
+
+    <label for="expiresAt">Listing expires at</label>
+    <input type="datetime-local" id="expiresAt" name="expiresAt" value="<%= form.expiresAt || '' %>" required />
+    <p class="hint">After this time, the listing is automatically treated as expired if unclaimed.</p>
+
+    <button type="submit" class="button-link">Post listing</button>
+  </form>
+</section>
+
+<%- include('partials/footer') %>
