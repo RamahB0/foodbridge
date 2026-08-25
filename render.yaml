@@ -3,7 +3,7 @@ services:
     name: foodbridge
     runtime: node
     plan: free
-    buildCommand: npm ci && npx prisma migrate deploy
+    buildCommand: npm install && npx prisma migrate deploy
     startCommand: npm start
     healthCheckPath: /
     envVars:
